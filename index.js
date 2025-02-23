@@ -29,16 +29,16 @@ app.use(
   })
 );
 
-// Connectwhat  to Database
+
 connectDB();
 
-// API Routes 
+
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/quotes", quoteRoutes);
 app.use("/api/policies", policyRoutes);
 app.use("/api/tickets", ticketRoutes);
 
-// Start Server
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
