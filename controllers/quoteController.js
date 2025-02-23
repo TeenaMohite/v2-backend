@@ -1,3 +1,5 @@
+// import Quote from "../models/Quote.js";
+
 import Quote from "../models/Quote.js";
 
 // Get all Quotes (Admin only)

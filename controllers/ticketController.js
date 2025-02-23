@@ -29,21 +29,34 @@ export const getTicketById = async (req, res) => {
 // Create a New Ticket
 export const createTicket = async (req, res) => {
   try {
-    const { issue } = req.body;
+    console.log("Received Token:", req.headers.authorization);
+    console.log("Decoded User:", req.user);
+    console.log("Request Body:", req.body); // Debugging
 
-    if (!issue) {
-      return res.status(400).json({ message: "Issue description is required" });
+    const { userId, subject } = req.body; // ✅ Use `subject`, not `issue`
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    if (!subject) {
+      return res.status(400).json({ message: "Subject is required" }); // ✅ Fix: Clear error message
     }
 
-    const newTicket = new Ticket({ user: req.user.id, issue, status: "Open" });
+    const newTicket = new Ticket({
+      userId, // ✅ Fix: Correct field name
+      subject, // ✅ Fix: Correct field name
+      status: "Open",
+    });
+
     await newTicket.save();
 
     res.status(201).json({ message: "Ticket created successfully", ticket: newTicket });
   } catch (error) {
     console.error("Create Ticket Error:", error);
-    res.status(500).json({ message: "Error creating ticket" });
+    res.status(500).json({ message: "Error creating ticket", error });
   }
 };
+
 
 // Update a Ticket
 export const updateTicket = async (req, res) => {

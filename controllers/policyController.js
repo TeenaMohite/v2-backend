@@ -4,28 +4,34 @@ import { sendEmail } from "../utils/emailService.js";
 // Create a new policy request
 export const createPolicy = async (req, res) => {
   try {
-    const { policyType, coverageAmount, premium, duration } = req.body;
+    console.log("Received Policy Request Body:", req.body); // Debugging
 
-    if (!policyType) {
-      return res.status(400).json({ message: "Policy type is required" });
+    const { policyType, coverageAmount, premium, duration, policyNumber } = req.body;
+
+    // if (!policyNumber) {
+    //   return res.status(400).json({ message: "Policy Number is required" });
+    // }
+    if (!policyType || !coverageAmount || !premium || !duration) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     const newPolicy = new Policy({
-      userId: req.user.id,
+      // policyNumber,
       policyType,
-      coverageAmount: coverageAmount || 0, 
-      premium: premium || 0,
-      duration: duration || "1 year",
-      status: "Pending",
+      coverageAmount,
+      premium,
+      duration,
     });
 
     await newPolicy.save();
-    res.status(201).json({ message: "Policy request submitted successfully", policy: newPolicy });
+
+    res.status(201).json({ message: "Policy created successfully", policy: newPolicy });
   } catch (error) {
     console.error("Create Policy Error:", error);
-    res.status(500).json({ message: "Error creating policy" });
+    res.status(500).json({ message: "Error creating policy", error });
   }
 };
+
 
 // Get all policies (Admin only)
 export const getAllPolicies = async (req, res) => {

@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -24,9 +24,10 @@ export const signup = async (req, res) => {
     // Create new user
     const newUser = new User({
       name,
+      lastname,
       email,
       password: hashedPassword,
-      role: role || "User", // Default role is "User"
+      role: role || "User", 
     });
 
     await newUser.save();
@@ -35,7 +36,7 @@ export const signup = async (req, res) => {
     console.error("Signup Error:", error);
     res.status(500).json({ message: "Error creating user" });
   }
-};
+}; 
 
 // User Login
 export const login = async (req, res) => {
@@ -130,3 +131,4 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Error fetching users" });
   }
 };
+ 

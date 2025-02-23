@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import Quote from "../models/Quote.js";
 import Policy from "../models/Policy.js";
 import Ticket from "../models/Ticket.js";
@@ -11,7 +11,7 @@ export const getAllUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error fetching users" });
   }
-};
+}; 
 
 // Delete a user (Admin only)
 export const deleteUser = async (req, res) => {
