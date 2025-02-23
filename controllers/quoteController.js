@@ -1,98 +1,113 @@
-// import Quote from "../models/Quote.js";
-
 import Quote from "../models/Quote.js";
 
-// Get all Quotes (Admin only)
-export const getAllQuotes = async (req, res) => {
-  try {
-    const quotes = await Quote.find({});
-    res.json(quotes);
-  } catch (error) {
-    console.error("Get All Quotes Error:", error);
-    res.status(500).json({ message: "Error fetching quotes" });
-  }
-};
-
-// Get Quote by ID
-export const getQuoteById = async (req, res) => {
-  try {
-    const quote = await Quote.findById(req.params.id);
-    if (!quote) {
-      return res.status(404).json({ message: "Quote not found" });
-    }
-
-    res.json(quote);
-  } catch (error) {
-    console.error("Get Quote by ID Error:", error);
-    res.status(500).json({ message: "Error fetching quote" });
-  }
-};
-
-// Get Quotes for a User
-export const getUserQuotes = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const quotes = await Quote.find({ user: userId });
-
-    res.json(quotes);
-  } catch (error) {
-    console.error("Get User Quotes Error:", error);
-    res.status(500).json({ message: "Error fetching user quotes" });
-  }
-};
-
-// Create a New Quote
+// Create a new quote
 export const createQuote = async (req, res) => {
   try {
-    const { amount, details } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      city,
+      state,
+      zipCode,
+      make,
+      model,
+      year,
+      vin,
+      mileage,
+      condition,
+      requiredPolicy,
+      coverage,
+      documents,
+      additionalNotes,
+      amount,
+    } = req.body;
 
-    if (!amount || !details) {
-      return res.status(400).json({ message: "Amount and details are required" });
+    // Validate required fields
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !address ||
+      !city ||
+      !state ||
+      !zipCode ||
+      !make ||
+      !model ||
+      !year ||
+      !vin ||
+      !mileage ||
+      !condition ||
+      !amount
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newQuote = new Quote({ user: req.user.id, amount, details });
+    // Save the quote to the database
+    const newQuote = new Quote({
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      city,
+      state,
+      zipCode,
+      make,
+      model,
+      year,
+      vin,
+      mileage,
+      condition,
+      requiredPolicy,
+      coverage,
+      documents,
+      additionalNotes,
+      amount,
+    });
+
     await newQuote.save();
 
-    res.status(201).json({ message: "Quote created successfully", quote: newQuote });
+    res.status(201).json({ message: "Quote created successfully", newQuote });
   } catch (error) {
-    console.error("Create Quote Error:", error);
-    res.status(500).json({ message: "Error creating quote" });
+    console.error("Error creating quote:", error);
+    res.status(500).json({ message: "Server error, please try again" });
   }
 };
 
-// Update a Quote
-export const updateQuote = async (req, res) => {
+// Get all quotes
+export const getAllQuotes = async (req, res) => {
   try {
-    const { amount, details } = req.body;
-
-    const quote = await Quote.findById(req.params.id);
-    if (!quote) {
-      return res.status(404).json({ message: "Quote not found" });
-    }
-
-    quote.amount = amount || quote.amount;
-    quote.details = details || quote.details;
-
-    const updatedQuote = await quote.save();
-    res.json({ message: "Quote updated successfully", quote: updatedQuote });
+    const quotes = await Quote.find();
+    res.status(200).json(quotes);
   } catch (error) {
-    console.error("Update Quote Error:", error);
-    res.status(500).json({ message: "Error updating quote" });
+    console.error("Error fetching quotes:", error);
+    res.status(500).json({ message: "Server error, please try again" });
   }
 };
 
-// Delete a Quote
-export const deleteQuote = async (req, res) => {
+// Update quote status
+export const updateQuoteStatus = async (req, res) => {
   try {
-    const quote = await Quote.findById(req.params.id);
-    if (!quote) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updatedQuote = await Quote.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedQuote) {
       return res.status(404).json({ message: "Quote not found" });
     }
 
-    await quote.deleteOne();
-    res.json({ message: "Quote deleted successfully" });
+    res.status(200).json({ message: "Quote status updated", updatedQuote });
   } catch (error) {
-    console.error("Delete Quote Error:", error);
-    res.status(500).json({ message: "Error deleting quote" });
+    console.error("Error updating quote status:", error);
+    res.status(500).json({ message: "Server error, please try again" });
   }
 };
