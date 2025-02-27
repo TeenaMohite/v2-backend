@@ -1,4 +1,4 @@
-import User from "../models/user.js";
+import User from "../models/User.js";
 import Quote from "../models/Quote.js";
 import Policy from "../models/Policy.js";
 import Ticket from "../models/Ticket.js";

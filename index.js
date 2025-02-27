@@ -12,7 +12,7 @@ dotenv.config();
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import quoteRoutes from "./routes/quoteRoutes.js";
-import userroute from "./routes/user2.js"
+import userroute from "./routes/user2.js";
 import policyRoutes from "./routes/policyRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import reportsRoute from "./routes/reports.js"

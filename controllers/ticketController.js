@@ -31,20 +31,20 @@ export const createTicket = async (req, res) => {
   try {
     console.log("Received Token:", req.headers.authorization);
     console.log("Decoded User:", req.user);
-    console.log("Request Body:", req.body); // Debugging
+    console.log("Request Body:", req.body); 
 
-    const { userId, subject } = req.body; // ✅ Use `subject`, not `issue`
+    const { userId, subject } = req.body; 
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
     if (!subject) {
-      return res.status(400).json({ message: "Subject is required" }); // ✅ Fix: Clear error message
+      return res.status(400).json({ message: "Subject is required" });
     }
 
     const newTicket = new Ticket({
-      userId, // ✅ Fix: Correct field name
-      subject, // ✅ Fix: Correct field name
+      userId,
+      subject, 
       status: "Open",
     });
 
