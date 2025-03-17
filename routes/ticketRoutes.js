@@ -1,5 +1,6 @@
 import express from "express";
-import authMiddleware  from "../middleware/authMiddleware.js"
+// import authMiddleware from "../middleware/authMiddleware.js";
+import multer from "multer";
 import {
   getAllTickets,
   getTicketById,
@@ -9,20 +10,15 @@ import {
 } from "../controllers/ticketController.js";
 
 const router = express.Router();
+const upload = multer({ dest: "uploads/" });
 
-// Get all tickets
-router.get("/", authMiddleware, getAllTickets);
+router.post("/tickets", upload.single("attachment"), createTicket);
 
-// Get ticket by ID
-router.get("/:id", authMiddleware, getTicketById);
-
-// Create a new ticket
-router.post("/", authMiddleware, createTicket);
-
-// Update a ticket
-router.put("/:id", authMiddleware, updateTicket);
-
-// Delete a ticket
-router.delete("/:id", authMiddleware, deleteTicket);
+// Apply authMiddleware to protect routes
+router.get("/", getAllTickets);
+router.get("/:id", getTicketById);
+router.post("/", createTicket);
+router.delete("/:id", deleteTicket);
+router.put("/:id",  updateTicket);
 
 export default router;

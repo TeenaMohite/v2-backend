@@ -39,7 +39,7 @@ export const signup = async (req, res) => {
   }
 }; 
 
-// ✅ User Login
+// User Login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -67,7 +67,7 @@ export const login = async (req, res) => {
   }
 };
 
-// ✅ Get User Profile
+//  Get User Profile
 export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password"); // Exclude password
@@ -81,7 +81,7 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// ✅ Update User Profile
+// Update User Profile
 export const updateUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);

@@ -7,18 +7,27 @@ dotenv.config();
 const authMiddleware = async (req, res, next) => {
   let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer ")
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
     try {
-      token = req.headers.authorization.split(" ")[1]; // Extract token part
-      console.log("Received Token:", token); // Debugging
+      token = req.headers.authorization.split(" ")[1];
+      console.log("Received Token:", token);
 
+      // Check if secret key is correctly loaded
+      if (!process.env.JWT_SECRET) {
+        console.error("JWT_SECRET is not defined in .env");
+        return res.status(500).json({ message: "Server configuration error" });
+      }
+
+      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded Token Data:", decoded);
+
+      // Attach user to request
       req.user = await User.findById(decoded.id).select("-password");
-      
-      console.log("Decoded User:", req.user); // Debugging
+      if (!req.user) {
+        return res.status(401).json({ message: "User not found, invalid token" });
+      }
+
       next();
     } catch (error) {
       console.error("Token Verification Error:", error.message);
