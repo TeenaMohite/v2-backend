@@ -4,18 +4,26 @@ import User2 from "../models/User2.js";
 const router = express.Router();
 
 // ✅ Get User Settings
-router.get("/:id", async (req, res) => {
+router.get("/get/:id", async (req, res) => {
   try {
     const user = await User2.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
+  } catch (error) { 
+    res.status(500).json({ error: error.message });
+  }
+});
+// ✅ Get All Users
+router.get("/getall", async (req, res) => {
+  try {
+    const users = await User2.find();
+    res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 // ✅ Update User Settings
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
     const updatedUser = await User2.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedUser) return res.status(404).json({ message: "User not found" });
@@ -26,7 +34,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // ✅ Create New User
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
     const newUser = new User2(req.body);
     await newUser.save();
@@ -37,7 +45,7 @@ router.post("/", async (req, res) => {
 });
 
 // ✅ Delete User
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
     const deletedUser = await User2.findByIdAndDelete(req.params.id);
     if (!deletedUser) return res.status(404).json({ message: "User not found" });
