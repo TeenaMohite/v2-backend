@@ -14,34 +14,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // create tickets
-export const createTicket = async (req, res) => {
-  try {
-    console.log("Request Body:", req.body);
-    console.log("Uploaded File:", req.file);
 
-    const { fullName, email, phone, category, subject, description } = req.body;
-    if (!fullName || !email || !phone || !category || !subject || !description) {
-      return res.status(400).json({ message: "All fields except attachment are required" });
-    }
-
-    const newTicket = new Ticket({
-      fullName,
-      email,
-      phone,
-      category,
-      subject,
-      description,
-      attachment: req.file ? req.file.filename : null, // Save file path in DB
-      status: "Open",
-    });
-
-    await newTicket.save();
-    res.status(201).json({ message: "Ticket created successfully", ticket: newTicket });
-  } catch (error) {
-    console.error("Create Ticket Error:", error);
-    res.status(500).json({ message: "Error creating ticket" });
-  }
-};
 
 // Get all tickets (Admin only)
 export const getAllTickets = async (req, res) => {
@@ -70,26 +43,31 @@ export const getTicketById = async (req, res) => {
 
 
 
-// Update a Ticket
-export const updateTicket = async (req, res) => {
+export const createTicket = async (req, res) => {
   try {
-    const { subject, status } = req.body;
+    const { fullName, email, phone, category, subject, description } = req.body;
+console.log(req.body);
+    const newTicket = new Ticket({
+      fullName,
+      email,
+      phone,
+      category,
+      subject,
+      description,
+      status: "Open",
+    });
 
-    const ticket = await Ticket.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    await newTicket.save();
 
-    ticket.subject = subject || ticket.subject;
-    ticket.status = status || ticket.status;
-
-    const updatedTicket = await ticket.save();
-    res.json({ message: "Ticket updated successfully", ticket: updatedTicket });
+    res.status(201).json({ message: "Ticket created successfully", ticket: newTicket });
   } catch (error) {
-    console.error("Update Ticket Error:", error);
-    res.status(500).json({ message: "Error updating ticket" });
+    console.error("Create Ticket Error:", error);
+    res.status(500).json({ message: "Error creating ticket", error });
   }
 };
+
+
+
 
 // Delete a Ticket
 export const deleteTicket = async (req, res) => {

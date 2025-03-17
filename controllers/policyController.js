@@ -51,3 +51,24 @@ export const deletePolicy = async (req, res) => {
     res.status(500).json({ message: "Server error, please try again" });
   }
 };
+
+
+// Get a single policy by ID
+export const getPolicyById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the policy by ID
+    const policy = await Policy.findById(id);
+
+    if (!policy) {
+      return res.status(404).json({ message: "Policy not found" });
+    }
+
+    // Return the policy data
+    res.status(200).json(policy);
+  } catch (error) {
+    console.error("Error fetching policy:", error);
+    res.status(500).json({ message: "Server error, please try again" });
+  }
+};
