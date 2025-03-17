@@ -70,4 +70,27 @@ router.delete('/delete/:id', async (req, res) => {
   }
 });
 
+router.get('/:id',async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const quote = await QuoteRequestModel.findById(id);
+    if (!quote) {
+      return res.status(404).json({ message: "Quote not found" });
+    }
+    
+    res.status(200).json(quote);
+  } catch (error) {
+    console.error("Error fetching quote:", error);
+    
+    // Handle invalid ObjectId format error
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ message: "Invalid quote ID format" });
+    }
+    
+    res.status(500).json({ message: "Server error, please try again" });
+  }
+
+}
+)
 export default router;

@@ -111,3 +111,28 @@ export const updateQuoteStatus = async (req, res) => {
     res.status(500).json({ message: "Server error, please try again" });
   }
 };
+
+
+// Get a single quote by ID
+export const getQuoteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const quote = await Quote.findById(id);
+    
+    if (!quote) {
+      return res.status(404).json({ message: "Quote not found" });
+    }
+    
+    res.status(200).json(quote);
+  } catch (error) {
+    console.error("Error fetching quote:", error);
+    
+    // Handle invalid ObjectId format error
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ message: "Invalid quote ID format" });
+    }
+    
+    res.status(500).json({ message: "Server error, please try again" });
+  }
+};
