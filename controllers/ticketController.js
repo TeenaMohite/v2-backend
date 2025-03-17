@@ -26,25 +26,19 @@ export const getTicketById = async (req, res) => {
   }
 };
 
-// Create a New Ticket
+
+
 export const createTicket = async (req, res) => {
   try {
-    console.log("Received Token:", req.headers.authorization);
-    console.log("Decoded User:", req.user);
-    console.log("Request Body:", req.body); 
-
-    const { userId, subject } = req.body; 
-
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
-    }
-    if (!subject) {
-      return res.status(400).json({ message: "Subject is required" });
-    }
-
+    const { fullName, email, phone, category, subject, description } = req.body;
+console.log(req.body);
     const newTicket = new Ticket({
-      userId,
-      subject, 
+      fullName,
+      email,
+      phone,
+      category,
+      subject,
+      description,
       status: "Open",
     });
 
@@ -58,26 +52,7 @@ export const createTicket = async (req, res) => {
 };
 
 
-// Update a Ticket
-export const updateTicket = async (req, res) => {
-  try {
-    const { issue, status } = req.body;
 
-    const ticket = await Ticket.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    ticket.issue = issue || ticket.issue;
-    ticket.status = status || ticket.status;
-
-    const updatedTicket = await ticket.save();
-    res.json({ message: "Ticket updated successfully", ticket: updatedTicket });
-  } catch (error) {
-    console.error("Update Ticket Error:", error);
-    res.status(500).json({ message: "Error updating ticket" });
-  }
-};
 
 // Delete a Ticket
 export const deleteTicket = async (req, res) => {
